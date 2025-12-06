@@ -1,0 +1,136 @@
+<Window x:Class="PS5_OS.GameInfoWindow"
+        x:Name="Root"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Game Info"
+        WindowStyle="None"
+        WindowState="Maximized"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Background="#FF151515"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown">
+    <Border Padding="16" Background="#FF1E1E1E" CornerRadius="6" BorderBrush="#FF2A2A2A" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="{Binding Title}"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Foreground="#FFE6E6E6"
+                       Margin="0 0 0 12"/>
+
+            <Grid Grid.Row="1" Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="#FF2A2A2A" CornerRadius="4" Padding="8" Margin="0,0,16,0">
+                    <Image Source="{Binding CoverUri}"
+                           Stretch="UniformToFill"
+                           Width="216"
+                           Height="300"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+                </Border>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
+                        <TextBlock Text="Platform: " Foreground="#FFDADADA" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Platform}" Foreground="#FFDADADA" Margin="6 0 0 0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
+                        <TextBlock Text="Launch path: " Foreground="#FFDADADA" FontWeight="Bold"/>
+                        <!-- Named text block so code-behind can set the folder-only value (drive\Games\<GameFolder>) -->
+                        <TextBlock x:Name="LaunchPathText" Foreground="#FFDADADA" TextTrimming="CharacterEllipsis" Width="520" Margin="6 0 0 0" Text="(none)"/>
+                    </StackPanel>
+
+                    <!-- Region -->
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
+                        <TextBlock Text="Region: " Foreground="#FFDADADA" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Region}" Foreground="#FFDADADA" Margin="6 0 0 0"/>
+                    </StackPanel>
+
+                    <!-- Languages -->
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
+                        <TextBlock Text="Languages: " Foreground="#FFDADADA" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding DisplayLanguages}" Foreground="#FFDADADA" Margin="6 0 0 0"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Description" Foreground="#FFDADADA" FontWeight="Bold" Margin="0 8 0 4"/>
+                    <TextBlock Text="No description available." Foreground="#FFB0B0B0" TextWrapping="Wrap" MaxWidth="520"/>
+
+                    <Separator Margin="0 12 0 12" Background="#FF2A2A2A"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 8">
+                        <TextBlock Text="Available Executables:" Foreground="#FFDADADA" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="CurrentPreferredText" Text="Current Preferred: (none)" Foreground="#FFB0B0B0" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="ExecutablesPanel" Margin="4 2 0 0"/>
+                    </ScrollViewer>
+
+                    <Separator Margin="0 12 0 12" Background="#FF2A2A2A"/>
+
+                    <!-- Achievements file path + status (added) -->
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 4" VerticalAlignment="Center">
+                        <TextBlock Text="Achievements file: " Foreground="#FFDADADA" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding AchievementsFileDisplay, ElementName=Root}" Foreground="#FFB0B0B0" Margin="6 0 0 0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="520"/>
+                    </StackPanel>
+
+                    <!-- Achievements section -->
+                    <StackPanel Orientation="Horizontal" Margin="0 6 0 8" VerticalAlignment="Center">
+                        <TextBlock Text="Achievements: " Foreground="#FFDADADA" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding AchievementsSummary, ElementName=Root}" Foreground="#FFB0B0B0" Margin="6 0 0 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <ListBox ItemsSource="{Binding Achievements, ElementName=Root}" Height="140" Background="#FF1E1E1E" BorderBrush="#FF2A2A2A" Margin="0,4,0,0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="28"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="160"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding StatusSymbol}" Foreground="{Binding StatusBrush}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="#FFE6E6E6" FontWeight="SemiBold" Margin="8,0,0,0" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding UnlockedDate}" Foreground="#FFB0B0B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Separator Margin="0 12 0 12" Background="#FF2A2A2A"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 12 0 0">
+                <Button x:Name="LaunchButton"
+                        Width="120"
+                        Margin="0 0 8 0"
+                        Padding="8 4"
+                        Background="#FF2E7D32"
+                        Foreground="White"
+                        Click="LaunchButton_Click">Launch</Button>
+
+                <Button x:Name="PropertiesButton"
+                        Width="48"
+                        Margin="0 0 8 0"
+                        Padding="8 4"
+                        Background="#FF3A3A3A"
+                        Foreground="White"
+                        Click="PropertiesButton_Click">...</Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

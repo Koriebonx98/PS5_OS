@@ -1,0 +1,113 @@
+<UserControl x:Class="PS5_OS.AllGamesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PS5_OS"
+             Background="Black"
+             Loaded="UserControl_Loaded"
+             PreviewKeyDown="UserControl_PreviewKeyDown">
+    <UserControl.Resources>
+        <Style x:Key="PlatformButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="6,6"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#FFD9CC00"/>
+                                <Setter TargetName="bd" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#FF444444"/>
+                                <Setter TargetName="bd" Property="BorderThickness" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Storyboard x:Key="EntranceStoryboard">
+            <DoubleAnimation Storyboard.TargetName="LayoutRoot"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             From="60" To="0" Duration="0:0:0.35">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="LayoutRoot"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.35"/>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" RenderTransformOrigin="0.5,0.5" Opacity="0">
+        <Grid.RenderTransform>
+            <TranslateTransform Y="60"/>
+        </Grid.RenderTransform>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title and top controls -->
+        <StackPanel Orientation="Vertical" Margin="24" Grid.Row="0">
+            <TextBlock Text="All Games"
+                       FontSize="26"
+                       Foreground="White"
+                       FontWeight="Bold"
+                       Margin="4"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled"
+                          Margin="0,8,0,0">
+                <WrapPanel x:Name="PlatformsPanel" IsItemsHost="False" Focusable="False"/>
+            </ScrollViewer>
+        </StackPanel>
+
+        <!-- sort / info area -->
+        <Grid Grid.Row="1" Margin="24,0,24,16">
+            <TextBlock Text="Sort By: Recently Played"
+                       Foreground="#FFBFBFBF"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Game covers grid: show 8 games per row -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="24,12">
+            <ItemsControl x:Name="GameItemsControl" Focusable="False">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <!-- UniformGrid with 8 columns ensures exactly 8 items per row -->
+                        <UniformGrid Columns="8" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Center each item inside the UniformGrid cell; fixed size for consistent rows -->
+                        <Grid Width="190" Height="260" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Border x:Name="CoverBorder" BorderThickness="2" BorderBrush="#FF444444" Background="#FF0F0F0F" Width="180" Height="180" HorizontalAlignment="Center" VerticalAlignment="Top" CornerRadius="2" SnapsToDevicePixels="True">
+                                <Image Source="{Binding CoverUri}" Stretch="UniformToFill"/>
+                            </Border>
+
+                            <TextBlock Text="{Binding Title}" Foreground="#FFD9D9D9" FontSize="13" Margin="0,192,0,0" TextWrapping="Wrap" Width="180" TextAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
